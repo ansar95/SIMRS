@@ -11,7 +11,6 @@ app.use(bodyParser.json());
 app.get("/", (req, res) => {
   db.query("SELECT * FROM product", (err, result) => {
     // hasil
-    console.log(result);
     res.send(result);
   });
 });
