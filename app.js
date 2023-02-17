@@ -7,37 +7,77 @@ const app = express()
 const port = 5001
 
 app.use(bodyParser.json())
-
 //ambil semua data product
 app.get("/", (req, res) => {
+  respon(200, "Api V1", "Ready", res)
+})
+
+//ambil semua data product
+app.get("/product", (req, res) => {
   const sql = "SELECT * FROM product"
   db.query(sql, (err, result) => {
-    // hasil
+    if (err) throw err
     respon(200, result, "get all product", res)
   })
 })
-
-app.get("/find", (req, res) => {
-  const sql = `SELECT product_name FROM product WHERE nim = ${req.query.nim}`
-  // console.log("nim:", req.query.nim)
+// ambil data berdasarkan nim
+app.get("/find/:nim", (req, res) => {
+  const nim = req.params.nim
+  const sql = `SELECT * FROM product WHERE nim = ${nim}`
   db.query(sql, (err, result) => {
-    // hasil
-    respon(200, result, "get name", res)
+    if (err) throw err
+    respon(200, result, "Detail", res)
   })
 })
+// add data
+app.post("/product", (req, res) => {
+  const { nim, product_name, product_price } = req.body
 
-app.post("/login", (req, res) => {
-  console.log({ requestLogin: req.body })
-  res.send("login berhasil!")
+  const sql = `INSERT INTO product (nim, product_name, product_price) VALUES (${nim},'${product_name}',${product_price})`
+  db.query(sql, (err, result) => {
+    if (err) respon(500, "invalid add", "error", res)
+    if (result?.affectedRows) {
+      const data = {
+        isAdd: result.affectedRows,
+        id: result.insertId,
+      }
+      respon(200, data, "Added Berhasil", res)
+    }
+  })
 })
-
-app.put("/user", (req, res) => {
-  console.log({ update: req.body })
-  res.send("update berhasil")
+// edit data
+app.put("/product", (req, res) => {
+  const { nim, product_name, product_price } = req.body
+  const sql = `UPDATE product SET product_name = '${product_name}', product_price = '${product_price}' WHERE nim = '${nim}'`
+  // const sql = `UPDATE product SET product_name = '${product_name}', product_price = ${product_price}, WHERE nim = ${nim}`
+  db.query(sql, (err, result) => {
+    if (err) respon(500, "invalid update", "error", res)
+    if (result?.affectedRows) {
+      const data = {
+        isUpdate: result.affectedRows,
+        massage: result.message,
+      }
+      respon(200, data, "Update Berhasil", res)
+    } else {
+      respon(404, "Data tidak di temukan ", "Error", res)
+    }
+  })
 })
-
-app.delete("/user", (req, res) => {
-  res.send("DELETE request at /user")
+// delete data
+app.delete("/product", (req, res) => {
+  const { nim } = req.body
+  const sql = `DELETE FROM product WHERE nim = ${nim}`
+  db.query(sql, (err, result) => {
+    if (err) respon(500, "Invalid Delete", "error", res)
+    if (result?.affectedRows) {
+      const data = {
+        isDelete: result.affectedRows,
+      }
+      respon(200, data, "Delete Berhasil", res)
+    } else {
+      respon(404, "Data tidak di temukan", "Error", res)
+    }
+  })
 })
 
 //server
