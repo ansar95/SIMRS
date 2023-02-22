@@ -1,0 +1,49 @@
+
+# get home
+GET http://localhost:5001
+
+# get all product
+###
+GET http://localhost:5001/products
+
+
+# cari berdasarkan nim
+###
+GET http://localhost:5001/cari/147
+
+# cari berdasarkan id
+###
+GET http://localhost:5001/product/32
+
+
+# add data 
+###
+POST http://localhost:5001/product
+Content-Type: application/json
+  
+  {
+    "nim": 148,
+    "product_name": "baru add",
+    "product_price": 10000
+}
+
+
+# edit data 
+###
+put http://localhost:5001/product
+Content-Type: application/json
+  
+  {
+    "nim": 477,
+    "product_name": "saya",
+    "product_price": 12000
+}
+
+# delete data
+###
+DELETE http://localhost:5001/product
+Content-Type: application/json
+
+{
+  "nim": 147
+}

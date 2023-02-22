@@ -7,24 +7,42 @@ const app = express()
 const port = 5001
 
 app.use(bodyParser.json())
+
 //ambil semua data product
 app.get("/", (req, res) => {
   respon(200, "Api V1", "Ready", res)
 })
 
 //ambil semua data product
-app.get("/product", (req, res) => {
+app.get("/products", (req, res) => {
   const sql = "SELECT * FROM product"
   db.query(sql, (err, result) => {
     if (err) throw err
     respon(200, result, "get all product", res)
   })
 })
+
+// ambil data berdasarkan id
+app.get("/product/:id", (req, res) => {
+  const id = req.params.id
+  // console.log(`nim : ${nim}`)
+
+  const sql = `SELECT * FROM product WHERE product_id = ${id}`
+  db.query(sql, (err, result) => {
+    // console.log(result)
+    if (err) throw err
+    respon(200, result, "Detail", res)
+  })
+})
+
 // ambil data berdasarkan nim
-app.get("/find/:nim", (req, res) => {
+app.get("/cari/:nim", (req, res) => {
   const nim = req.params.nim
+  // console.log(`nim : ${nim}`)
+
   const sql = `SELECT * FROM product WHERE nim = ${nim}`
   db.query(sql, (err, result) => {
+    // console.log(result)
     if (err) throw err
     respon(200, result, "Detail", res)
   })
@@ -49,7 +67,6 @@ app.post("/product", (req, res) => {
 app.put("/product", (req, res) => {
   const { nim, product_name, product_price } = req.body
   const sql = `UPDATE product SET product_name = '${product_name}', product_price = '${product_price}' WHERE nim = '${nim}'`
-  // const sql = `UPDATE product SET product_name = '${product_name}', product_price = ${product_price}, WHERE nim = ${nim}`
   db.query(sql, (err, result) => {
     if (err) respon(500, "invalid update", "error", res)
     if (result?.affectedRows) {
