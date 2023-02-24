@@ -2,6 +2,7 @@ const express = require("express")
 const bodyParser = require("body-parser")
 const db = require("./connection")
 const respon = require("./responses")
+const { check, validationResult } = require("express-validator")
 
 const app = express()
 const port = 5001
@@ -48,21 +49,39 @@ app.get("/cari/:nim", (req, res) => {
   })
 })
 // add data
-app.post("/product", (req, res) => {
-  const { nim, product_name, product_price } = req.body
-
-  const sql = `INSERT INTO product (nim, product_name, product_price) VALUES (${nim},'${product_name}',${product_price})`
-  db.query(sql, (err, result) => {
-    if (err) respon(500, "invalid add", "error", res)
-    if (result?.affectedRows) {
-      const data = {
-        isAdd: result.affectedRows,
-        id: result.insertId,
-      }
-      respon(200, data, "Added Berhasil", res)
+app.post(
+  "/product",
+  [
+    check("nim")
+      .isLength({ min: 3 })
+      .withMessage("minimal 3 angka")
+      .notEmpty()
+      .withMessage("tidak boleh kosong")
+      .isNumeric()
+      .withMessage("nim harus angka"),
+    check("product_name").notEmpty(),
+    check("product_price").notEmpty(),
+  ],
+  (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      return respon(400, errors, "error", res)
     }
-  })
-})
+    const { nim, product_name, product_price } = req.body
+
+    const sql = `INSERT INTO product (nim, product_name, product_price) VALUES (${nim},'${product_name}',${product_price})`
+    db.query(sql, (err, result) => {
+      if (err) respon(500, "invalid add", "error", res)
+      if (result?.affectedRows) {
+        const data = {
+          isAdd: result.affectedRows,
+          id: result.insertId,
+        }
+        respon(200, data, "Added Berhasil", res)
+      }
+    })
+  },
+)
 // edit data
 app.put("/product", (req, res) => {
   const { nim, product_name, product_price } = req.body

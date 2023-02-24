@@ -9,11 +9,11 @@ GET http://localhost:5001/products
 
 # cari berdasarkan nim
 ###
-GET http://localhost:5001/cari/147
+GET http://localhost:5001/cari/565
 
 # cari berdasarkan id
 ###
-GET http://localhost:5001/product/32
+GET http://localhost:5001/product/23
 
 
 # add data 
@@ -22,9 +22,9 @@ POST http://localhost:5001/product
 Content-Type: application/json
   
   {
-    "nim": 148,
-    "product_name": "baru add",
-    "product_price": 10000
+    "nim":2,
+    "product_name":"",
+    "product_price" : 200
 }
 
 
@@ -45,5 +45,6 @@ DELETE http://localhost:5001/product
 Content-Type: application/json
 
 {
-  "nim": 147
+  "nim": 474
+
 }
