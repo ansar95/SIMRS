@@ -1,11 +1,13 @@
 const express = require("express")
 const bodyParser = require("body-parser")
-const db = require("./connection")
+const db = require("./config/connection")
 const respon = require("./responses")
 const { check, validationResult } = require("express-validator")
+require("dotenv").config()
 
 const app = express()
-const port = 5001
+
+const port = process.env.PORT || 5001
 
 app.use(bodyParser.json())
 
@@ -60,7 +62,7 @@ app.post(
       .isNumeric()
       .withMessage("nim harus angka"),
     check("product_name").notEmpty(),
-    check("product_price").notEmpty(),
+    check("product_price").notEmpty().withMessage("tidak boleh  kosong"),
   ],
   (req, res) => {
     const errors = validationResult(req)

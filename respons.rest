@@ -22,9 +22,9 @@ POST http://localhost:5001/product
 Content-Type: application/json
   
   {
-    "nim":2,
-    "product_name":"",
-    "product_price" : 200
+    "nim":"12",
+    "product_name":"asaaa",
+    "product_price" : "2121" 
 }
 
 
@@ -45,6 +45,6 @@ DELETE http://localhost:5001/product
 Content-Type: application/json
 
 {
-  "nim": 474
+  "nim": 5
 
 }
